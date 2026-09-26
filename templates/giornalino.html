@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Giornalino — Voce di Scuola{% endblock %}
+{% block body_class %}page-catalog page-giornalino{% endblock %}
+
+{% block content %}
+<section class="catalog-hero">
+  <div class="catalog-hero-atmosphere" aria-hidden="true"></div>
+  <div class="catalog-hero-inner reveal">
+    <p class="catalog-kicker">Archivio</p>
+    <h1>Giornalino</h1>
+    <p class="catalog-lead">I numeri della rivista scolastica, con copertina, volume e data di uscita.</p>
+  </div>
+</section>
+
+<section class="catalog" aria-label="Numeri del giornalino">
+  <div class="catalog-toolbar reveal">
+    <p class="catalog-count">{{ items|length }} numeri</p>
+    <div class="view-toggle" role="group" aria-label="Modalità di visualizzazione">
+      <button type="button" class="view-btn is-active" data-view="grid" aria-pressed="true">
+        <span class="view-icon" aria-hidden="true">▦</span> Griglia
+      </button>
+      <button type="button" class="view-btn" data-view="list" aria-pressed="false">
+        <span class="view-icon" aria-hidden="true">☰</span> Elenco
+      </button>
+    </div>
+  </div>
+
+  <div class="media-catalog" data-view="grid">
+    {% for item in items %}
+    <article class="media-card reveal">
+      <div class="media-cover {{ item.cover_class }}" aria-hidden="true">
+        <span class="cover-mark">Vol. {{ "%02d"|format(item.volume) }}</span>
+      </div>
+      <div class="media-body">
+        <div class="media-meta">
+          <span class="media-badge">Volume {{ item.volume }}</span>
+          <time datetime="{{ item.date }}">{{ item.date_label }}</time>
+        </div>
+        <h2 class="media-title">{{ item.title }}</h2>
+        <p class="media-desc">{{ item.description }}</p>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

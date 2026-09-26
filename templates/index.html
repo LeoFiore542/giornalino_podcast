@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Voce di Scuola — Home{% endblock %}
+{% block body_class %}page-home{% endblock %}
+
+{% block content %}
+<section class="hero" aria-labelledby="hero-brand">
+  <div class="hero-atmosphere" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <p class="hero-brand reveal" id="hero-brand">Voce di Scuola</p>
+    <h1 class="hero-title reveal">Il giornalino e il podcast della nostra scuola</h1>
+    <p class="hero-lead reveal">Storie, interviste e voci degli studenti, in un unico posto.</p>
+    <div class="hero-actions reveal">
+      <a class="btn btn-primary" href="{{ url_for('giornalino') }}">Leggi il giornalino</a>
+      <a class="btn btn-secondary" href="{{ url_for('podcast') }}">Ascolta il podcast</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

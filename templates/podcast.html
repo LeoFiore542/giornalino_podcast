@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Podcast — Voce di Scuola{% endblock %}
+{% block body_class %}page-catalog page-podcast{% endblock %}
+
+{% block content %}
+<section class="catalog-hero">
+  <div class="catalog-hero-atmosphere" aria-hidden="true"></div>
+  <div class="catalog-hero-inner reveal">
+    <p class="catalog-kicker">Ascolta</p>
+    <h1>Podcast</h1>
+    <p class="catalog-lead">Episodi della redazione audio, con copertina, numero e data di pubblicazione.</p>
+  </div>
+</section>
+
+<section class="catalog" aria-label="Episodi del podcast">
+  <div class="catalog-toolbar reveal">
+    <p class="catalog-count">{{ items|length }} episodi</p>
+    <div class="view-toggle" role="group" aria-label="Modalità di visualizzazione">
+      <button type="button" class="view-btn is-active" data-view="grid" aria-pressed="true">
+        <span class="view-icon" aria-hidden="true">▦</span> Griglia
+      </button>
+      <button type="button" class="view-btn" data-view="list" aria-pressed="false">
+        <span class="view-icon" aria-hidden="true">☰</span> Elenco
+      </button>
+    </div>
+  </div>
+
+  <div class="media-catalog" data-view="grid">
+    {% for item in items %}
+    <article class="media-card reveal">
+      <div class="media-cover {{ item.cover_class }}" aria-hidden="true">
+        <span class="cover-mark">Ep. {{ "%02d"|format(item.episode) }}</span>
+      </div>
+      <div class="media-body">
+        <div class="media-meta">
+          <span class="media-badge">Episodio {{ item.episode }}</span>
+          <time datetime="{{ item.date }}">{{ item.date_label }}</time>
+        </div>
+        <h2 class="media-title">{{ item.title }}</h2>
+        <p class="media-desc">{{ item.description }}</p>
+        {% if item.duration %}
+        <p class="media-duration">{{ item.duration }}</p>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
