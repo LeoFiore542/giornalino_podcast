@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{% block title %}Voce Labriola{% endblock %}</title>
   <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
   <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/png" sizes="32x32">
@@ -16,7 +16,8 @@
   <a class="skip-link" href="#contenuto-principale">Salta al contenuto</a>
 
   <div class="dev-banner" role="status">
-    Sito in fase di sviluppo — contenuti e funzionalità sono provvisori.
+    <span class="dev-banner-full">Sito in fase di sviluppo — contenuti e funzionalità sono provvisori.</span>
+    <span class="dev-banner-short">Sito in fase di sviluppo</span>
   </div>
 
   <header class="site-header">
