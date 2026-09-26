@@ -61,5 +61,22 @@
   document.addEventListener("DOMContentLoaded", () => {
     revealOnLoad();
     initViewToggle();
+    initCookieBanner();
   });
+
+  function initCookieBanner() {
+    const banner = document.getElementById("cookie-banner");
+    const accept = document.getElementById("cookie-accept");
+    if (!banner || !accept) return;
+
+    const key = "voce-cookie-notice";
+    if (!localStorage.getItem(key)) {
+      banner.hidden = false;
+    }
+
+    accept.addEventListener("click", () => {
+      localStorage.setItem(key, "1");
+      banner.hidden = true;
+    });
+  }
 })();

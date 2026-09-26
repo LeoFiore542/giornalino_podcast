@@ -50,8 +50,8 @@ EPISODI = [
     },
     {
         "episode": 1,
-        "title": "Benvenuti a Voce di Scuola",
-        "description": "La redazione si presenta e racconta com’è nato il podcast.",
+        "title": "Benvenuti a Voce Labriola",
+        "description": "La redazione si presenta e racconta com’è nato il podcast della scuola Antonio Labriola.",
         "date": "2026-01-15",
         "date_label": "15 gennaio 2026",
         "duration": "12:05",
@@ -73,6 +73,21 @@ def giornalino():
 @app.route("/podcast")
 def podcast():
     return render_template("podcast.html", items=EPISODI)
+
+
+@app.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
+
+
+@app.route("/accessibilita")
+def accessibilita():
+    return render_template("accessibilita.html")
+
+
+@app.route("/note-legali")
+def note_legali():
+    return render_template("note_legali.html")
 
 
 if __name__ == "__main__":

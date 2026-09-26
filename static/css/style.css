@@ -107,7 +107,206 @@ main {
   padding: 1.5rem clamp(1rem, 4vw, 2.5rem);
   border-top: 1px solid var(--line);
   font-size: 0.9rem;
+}
+
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  width: min(100%, var(--max));
+  margin: 0 auto;
+}
+
+.footer-copy {
+  margin: 0;
   opacity: 0.7;
+}
+
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+}
+
+.footer-nav a {
+  opacity: 0.75;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  transition: opacity 0.2s ease;
+}
+
+.footer-nav a:hover,
+.footer-nav a:focus-visible {
+  opacity: 1;
+}
+
+.dev-banner {
+  position: relative;
+  z-index: 25;
+  padding: 0.55rem clamp(1rem, 4vw, 2.5rem);
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-bottom: 1px solid rgba(26, 50, 0, 0.15);
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 100;
+  padding: 0.65rem 1rem;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+  border-radius: var(--radius);
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+  outline: 2px solid var(--foam);
+  outline-offset: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.page-home :focus-visible,
+.page-catalog :focus-visible {
+  outline-color: var(--accent);
+}
+
+.cookie-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  padding: 1rem clamp(1rem, 4vw, 2.5rem);
+  background: rgba(7, 31, 36, 0.96);
+  border-top: 1px solid rgba(232, 244, 241, 0.16);
+  color: var(--foam);
+}
+
+.cookie-banner-inner {
+  width: min(100%, var(--max));
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem 1.25rem;
+}
+
+.cookie-banner-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.cookie-banner-inner > p:not(.cookie-banner-title) {
+  margin: 0;
+  flex: 1 1 16rem;
+  font-size: 0.9rem;
+  opacity: 0.85;
+  line-height: 1.45;
+}
+
+.cookie-banner a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.cookie-accept {
+  flex-shrink: 0;
+  padding: 0.65rem 1.1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* —— Legal pages —— */
+.legal {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 44rem);
+  margin: 0 auto;
+  padding: clamp(2rem, 6vh, 3.25rem) clamp(1rem, 4vw, 2.5rem) clamp(3rem, 8vh, 5rem);
+}
+
+.legal-header {
+  margin-bottom: 1.75rem;
+}
+
+.legal-header h1 {
+  margin: 0 0 0.65rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.legal-note {
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--accent-ink);
+  background: rgba(200, 245, 66, 0.88);
+  border-radius: var(--radius);
+}
+
+.legal-body h2 {
+  margin: 1.75rem 0 0.55rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.legal-body p,
+.legal-body li {
+  opacity: 0.86;
+}
+
+.legal-body p {
+  margin: 0 0 0.75rem;
+}
+
+.legal-body ul {
+  margin: 0 0 0.85rem;
+  padding-left: 1.2rem;
+}
+
+.legal-body li {
+  margin-bottom: 0.35rem;
+}
+
+.legal-body a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.legal-body code {
+  font-size: 0.88em;
+  opacity: 0.95;
+}
+
+.page-home .site-footer,
+.page-catalog .site-footer {
+  border-top-color: rgba(232, 244, 241, 0.12);
+  color: var(--foam);
 }
 
 /* —— Landing hero —— */

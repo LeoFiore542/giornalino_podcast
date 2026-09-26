@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Note legali — Voce Labriola{% endblock %}
+{% block body_class %}page-catalog page-legal{% endblock %}
+
+{% block content %}
+<article class="legal">
+  <header class="legal-header reveal">
+    <p class="catalog-kicker">Informazioni</p>
+    <h1>Note legali</h1>
+    <p class="legal-note">Testo modello da adattare. Per l’informativa privacy vedi la pagina dedicata.</p>
+  </header>
+
+  <div class="legal-body reveal">
+    <h2>Editore</h2>
+    <p>
+      Sito gestito da <strong>Scuola Antonio Labriola</strong><br>
+      Indirizzo: <strong>[indirizzo]</strong><br>
+      Contatti: <strong>[email / telefono]</strong>
+    </p>
+
+    <h2>Cookie</h2>
+    <p>
+      Il sito utilizza esclusivamente cookie o memorizzazioni tecniche necessarie al funzionamento
+      (ad esempio preferenza di visualizzazione griglia/elenco e memorizzazione della chiusura dell’avviso).
+      Non sono impiegati cookie di profilazione o di terze parti a fini pubblicitari.
+      Maggiori dettagli nella <a href="{{ url_for('privacy') }}">Privacy</a>.
+    </p>
+
+    <h2>Proprietà intellettuale</h2>
+    <p>
+      Testi, grafiche, immagini e audio pubblicati appartengono agli autori o sono utilizzati con autorizzazione.
+      È vietata la riproduzione non autorizzata, salvo dove diversamente indicato.
+    </p>
+
+    <h2>Diritti d’immagine</h2>
+    <p>
+      Foto e registrazioni che ritraggono persone, in particolare minori, sono pubblicate solo previo
+      consenso/autorizzazione secondo le procedure della scuola.
+    </p>
+
+    <h2>Limitazione di responsabilità</h2>
+    <p>
+      I contenuti hanno finalità informative e didattiche. La scuola si riserva di aggiornare o rimuovere
+      materiali in qualsiasi momento. Per segnalazioni: <strong>[email redazione]</strong>.
+    </p>
+  </div>
+</article>
+{% endblock %}

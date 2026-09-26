@@ -1,6 +1,6 @@
-# Voce di Scuola — Giornalino & Podcast
+# Voce Labriola — Giornalino & Podcast
 
-Sito Flask minimale per ospitare il giornalino e il podcast della scuola. Scheletro con landing e pagine placeholder, pronto per PythonAnywhere.
+Sito Flask per il giornalino e il podcast della scuola Antonio Labriola. Scheletro con landing e pagine placeholder, pronto per PythonAnywhere.
 
 ## Struttura
 

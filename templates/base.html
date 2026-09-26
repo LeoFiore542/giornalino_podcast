@@ -3,15 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Giornalino & Podcast{% endblock %}</title>
+  <title>{% block title %}Voce Labriola{% endblock %}</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.png') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="{% block body_class %}{% endblock %}">
+  <a class="skip-link" href="#contenuto-principale">Salta al contenuto</a>
+
+  <div class="dev-banner" role="status">
+    Sito in fase di sviluppo — contenuti e funzionalità sono provvisori.
+  </div>
+
   <header class="site-header">
-    <a class="brand" href="{{ url_for('index') }}">Voce di Scuola</a>
+    <a class="brand" href="{{ url_for('index') }}">Voce Labriola</a>
     <nav class="site-nav" aria-label="Principale">
       <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}is-active{% endif %}">Home</a>
       <a href="{{ url_for('giornalino') }}" class="{% if request.endpoint == 'giornalino' %}is-active{% endif %}">Giornalino</a>
@@ -19,13 +28,40 @@
     </nav>
   </header>
 
-  <main>
+  <main id="contenuto-principale">
     {% block content %}{% endblock %}
   </main>
 
   <footer class="site-footer">
-    <p>Giornalino e podcast della scuola — scheletro di progetto</p>
+    <div class="footer-inner">
+      <p class="footer-copy">Giornalino e podcast della scuola Antonio Labriola</p>
+      <nav class="footer-nav" aria-label="Informazioni legali">
+        <a href="{{ url_for('privacy') }}">Privacy</a>
+        <a href="{{ url_for('accessibilita') }}">Accessibilità</a>
+        <a href="{{ url_for('note_legali') }}">Note legali</a>
+      </nav>
+    </div>
   </footer>
+
+  <div
+    id="cookie-banner"
+    class="cookie-banner"
+    role="dialog"
+    aria-labelledby="cookie-banner-title"
+    aria-describedby="cookie-banner-desc"
+    hidden
+  >
+    <div class="cookie-banner-inner">
+      <p id="cookie-banner-title" class="cookie-banner-title">Cookie tecnici</p>
+      <p id="cookie-banner-desc">
+        Questo sito usa solo cookie/memorizzazioni tecniche necessarie al funzionamento
+        (es. preferenze di visualizzazione). Nessun cookie di profilazione.
+        <a href="{{ url_for('note_legali') }}">Note legali</a> ·
+        <a href="{{ url_for('privacy') }}">Privacy</a>
+      </p>
+      <button type="button" class="btn btn-primary cookie-accept" id="cookie-accept">Ho capito</button>
+    </div>
+  </div>
 
   <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </body>
