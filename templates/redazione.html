@@ -14,30 +14,30 @@
 </section>
 
 <section class="redazione-section" aria-label="Membri del team">
-  <div class="redazione-grid">
-    {% for member in members %}
-    <article class="member-card reveal">
-      <div class="member-photo-wrap">
-        {% if member.foto_url %}
-        <img class="member-photo" src="{{ member.foto_url }}" alt="Foto di {{ member.full_name }}" width="96" height="96" loading="lazy">
-        {% else %}
-        <div class="member-photo member-photo-fallback" aria-hidden="true">{{ member.initials }}</div>
-        {% endif %}
-      </div>
-      <div class="member-body">
-        <h2 class="member-name">{{ member.full_name }}</h2>
-        <p class="member-role">
-          <span class="member-badge">{{ member.ruolo_label }}</span>
-          {% if member.compito %}<span class="member-task">{{ member.compito }}</span>{% endif %}
-        </p>
-        {% if member.email %}
-        <a class="member-email" href="mailto:{{ member.email }}">{{ member.email }}</a>
-        {% endif %}
-      </div>
-    </article>
+  <div class="team-group reveal">
+    <h2 class="team-group-title">Docenti</h2>
+    {% if docenti %}
+    <div class="redazione-grid">
+      {% for member in docenti %}
+      {% include "partials/member_card.html" %}
+      {% endfor %}
+    </div>
     {% else %}
-    <p class="catalog-empty">Nessun membro da mostrare.</p>
-    {% endfor %}
+    <p class="catalog-empty">Nessun docente da mostrare.</p>
+    {% endif %}
+  </div>
+
+  <div class="team-group reveal">
+    <h2 class="team-group-title">Studenti</h2>
+    {% if studenti %}
+    <div class="redazione-grid">
+      {% for member in studenti %}
+      {% include "partials/member_card.html" %}
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="catalog-empty">Nessuno studente da mostrare.</p>
+    {% endif %}
   </div>
 </section>
 {% endblock %}

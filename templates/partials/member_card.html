@@ -1,0 +1,19 @@
+<article class="member-card">
+  <div class="member-photo-wrap">
+    {% if member.foto_url %}
+    <img class="member-photo" src="{{ member.foto_url }}" alt="Foto di {{ member.full_name }}" width="96" height="96" loading="lazy">
+    {% else %}
+    <div class="member-photo member-photo-fallback" aria-hidden="true">{{ member.initials }}</div>
+    {% endif %}
+  </div>
+  <div class="member-body">
+    <h3 class="member-name">{{ member.full_name }}</h3>
+    <p class="member-role">
+      <span class="member-badge">{{ member.ruolo_label }}</span>
+      {% if member.compito %}<span class="member-task">{{ member.compito }}</span>{% endif %}
+    </p>
+    {% if member.email %}
+    <a class="member-email" href="mailto:{{ member.email }}">{{ member.email }}</a>
+    {% endif %}
+  </div>
+</article>

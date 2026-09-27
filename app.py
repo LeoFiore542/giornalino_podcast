@@ -64,7 +64,14 @@ def podcast():
 @app.route("/chi-siamo")
 @app.route("/redazione")
 def chi_siamo():
-    return render_template("redazione.html", members=list_redazione())
+    members = list_redazione()
+    docenti = [m for m in members if m["ruolo"] == "docente"]
+    studenti = [m for m in members if m["ruolo"] == "studente"]
+    return render_template(
+        "redazione.html",
+        docenti=docenti,
+        studenti=studenti,
+    )
 
 
 @app.route("/media/redazione/<path:filename>")
