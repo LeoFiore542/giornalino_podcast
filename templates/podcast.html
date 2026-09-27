@@ -29,7 +29,11 @@
   <div class="media-catalog" data-view="grid">
     {% for item in items %}
     <article class="media-card reveal">
-      <div class="media-cover {{ item.cover_class }}" aria-hidden="true">
+      <div
+        class="{{ item.cover_style }}"
+        {% if item.cover_url %}style="background-image: url('{{ item.cover_url }}');"{% endif %}
+        aria-hidden="true"
+      >
         <span class="cover-mark">Ep. {{ "%02d"|format(item.episode) }}</span>
       </div>
       <div class="media-body">
@@ -42,8 +46,19 @@
         {% if item.duration %}
         <p class="media-duration">{{ item.duration }}</p>
         {% endif %}
+        <div class="media-actions">
+          {% if item.file_ready %}
+          <audio class="media-audio" controls preload="none" src="{{ item.file_url }}">
+            Il tuo browser non supporta l’audio HTML5.
+          </audio>
+          {% else %}
+          <span class="media-pending">Audio in arrivo</span>
+          {% endif %}
+        </div>
       </div>
     </article>
+    {% else %}
+    <p class="catalog-empty">Nessun episodio in archivio. Aggiungi una cartella in <code>media/podcast/</code>.</p>
     {% endfor %}
   </div>
 </section>

@@ -29,7 +29,11 @@
   <div class="media-catalog" data-view="grid">
     {% for item in items %}
     <article class="media-card reveal">
-      <div class="media-cover {{ item.cover_class }}" aria-hidden="true">
+      <div
+        class="{{ item.cover_style }}"
+        {% if item.cover_url %}style="background-image: url('{{ item.cover_url }}');"{% endif %}
+        aria-hidden="true"
+      >
         <span class="cover-mark">Vol. {{ "%02d"|format(item.volume) }}</span>
       </div>
       <div class="media-body">
@@ -39,8 +43,17 @@
         </div>
         <h2 class="media-title">{{ item.title }}</h2>
         <p class="media-desc">{{ item.description }}</p>
+        <div class="media-actions">
+          {% if item.file_ready %}
+          <a class="btn btn-primary btn-small" href="{{ item.file_url }}" target="_blank" rel="noopener">Apri PDF</a>
+          {% else %}
+          <span class="media-pending">PDF in arrivo</span>
+          {% endif %}
+        </div>
       </div>
     </article>
+    {% else %}
+    <p class="catalog-empty">Nessun numero in archivio. Aggiungi una cartella in <code>media/giornalino/</code>.</p>
     {% endfor %}
   </div>
 </section>

@@ -1,63 +1,48 @@
-from flask import Flask, render_template
+import os
+from functools import wraps
+
+from flask import (
+    Flask,
+    abort,
+    flash,
+    redirect,
+    render_template,
+    request,
+    send_file,
+    session,
+    url_for,
+)
+
+from storage import (
+    delete_cover_file,
+    delete_item,
+    delete_main_file,
+    list_episodi,
+    list_giornalini,
+    next_episode_number,
+    next_volume_number,
+    publish_item,
+    resolve_media_file,
+    save_uploaded_cover,
+    save_uploaded_main,
+    today_iso,
+)
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "voce-labriola-dev-change-me")
+app.config["MAX_CONTENT_LENGTH"] = 64 * 1024 * 1024  # 64 MB
 
-GIORNALINI = [
-    {
-        "volume": 3,
-        "title": "Primavera in aula",
-        "description": "Editoriale, sport e creatività: il terzo numero della redazione.",
-        "date": "2026-03-15",
-        "date_label": "15 marzo 2026",
-        "cover_class": "cover-spring",
-    },
-    {
-        "volume": 2,
-        "title": "Luci d’inverno",
-        "description": "Reportage natalizi, interviste e i migliori momenti del semestre.",
-        "date": "2025-12-10",
-        "date_label": "10 dicembre 2025",
-        "cover_class": "cover-winter",
-    },
-    {
-        "volume": 1,
-        "title": "Nuovo anno",
-        "description": "Presentazione della redazione e i primi articoli dell’anno scolastico.",
-        "date": "2025-09-20",
-        "date_label": "20 settembre 2025",
-        "cover_class": "cover-autumn",
-    },
-]
+STORAGE_PASSWORD = os.environ.get("STORAGE_PASSWORD", "vocelabriola")
 
-EPISODI = [
-    {
-        "episode": 3,
-        "title": "Dietro le quinte del musical",
-        "description": "Interviste al cast e al corpo docenti, tra prove e première.",
-        "date": "2026-03-10",
-        "date_label": "10 marzo 2026",
-        "duration": "24:18",
-        "cover_class": "cover-mic",
-    },
-    {
-        "episode": 2,
-        "title": "Orientamento: dove andiamo?",
-        "description": "Esperienze di ex studenti e consigli pratici sul dopo-diploma.",
-        "date": "2026-02-12",
-        "date_label": "12 febbraio 2026",
-        "duration": "18:42",
-        "cover_class": "cover-path",
-    },
-    {
-        "episode": 1,
-        "title": "Benvenuti a Voce Labriola",
-        "description": "La redazione si presenta e racconta com’è nato il podcast della scuola Antonio Labriola.",
-        "date": "2026-01-15",
-        "date_label": "15 gennaio 2026",
-        "duration": "12:05",
-        "cover_class": "cover-wave",
-    },
-]
+
+def storage_login_required(view):
+    @wraps(view)
+    def wrapped(*args, **kwargs):
+        if not session.get("storage_auth"):
+            return redirect(url_for("index", storage_login=1))
+        return view(*args, **kwargs)
+
+    return wrapped
 
 
 @app.route("/")
@@ -67,12 +52,20 @@ def index():
 
 @app.route("/giornalino")
 def giornalino():
-    return render_template("giornalino.html", items=GIORNALINI)
+    return render_template("giornalino.html", items=list_giornalini())
 
 
 @app.route("/podcast")
 def podcast():
-    return render_template("podcast.html", items=EPISODI)
+    return render_template("podcast.html", items=list_episodi())
+
+
+@app.route("/media/<kind>/<slug>/<path:filename>")
+def media_file(kind, slug, filename):
+    path = resolve_media_file(kind, slug, filename)
+    if path is None:
+        abort(404)
+    return send_file(path)
 
 
 @app.route("/privacy")
@@ -90,5 +83,126 @@ def note_legali():
     return render_template("note_legali.html")
 
 
+@app.route("/storage", methods=["GET"])
+def storage_entry():
+    if session.get("storage_auth"):
+        return redirect(url_for("storage_dashboard"))
+    return redirect(url_for("index", storage_login=1))
+
+
+@app.route("/storage/auth", methods=["POST"])
+def storage_auth():
+    password = request.form.get("password", "")
+    if password == STORAGE_PASSWORD:
+        session["storage_auth"] = True
+        session.permanent = True
+        return {"ok": True, "redirect": url_for("storage_dashboard")}
+    return {"ok": False, "error": "Password non corretta."}, 401
+
+
+@app.route("/storage/logout", methods=["POST"])
+def storage_logout():
+    session.pop("storage_auth", None)
+    flash("Sei uscito dall’area Storage.", "info")
+    return redirect(url_for("index"))
+
+
+@app.route("/storage/dashboard")
+@storage_login_required
+def storage_dashboard():
+    return render_template(
+        "storage_dashboard.html",
+        giornalini=list_giornalini(),
+        episodi=list_episodi(),
+        next_volume=next_volume_number(),
+        next_episode=next_episode_number(),
+        today_label=_today_label(),
+    )
+
+
+def _today_label():
+    from storage import date_label_it
+
+    return date_label_it(today_iso())
+
+
+@app.route("/storage/publish", methods=["POST"])
+@storage_login_required
+def storage_publish():
+    kind = request.form.get("kind", "")
+    try:
+        slug = publish_item(
+            kind=kind,
+            number=int(request.form.get("number") or 0),
+            title=request.form.get("title", ""),
+            description=request.form.get("description", ""),
+            main_upload=request.files.get("main_file"),
+            cover_upload=request.files.get("cover_file"),
+            duration=request.form.get("duration", ""),
+        )
+        label = "giornalino" if kind == "giornalino" else "podcast"
+        flash(f"Pubblicato {label} ({slug}) con data di oggi.", "ok")
+    except (ValueError, TypeError) as exc:
+        flash(str(exc), "error")
+    return redirect(url_for("storage_dashboard"))
+
+
+@app.route("/storage/upload", methods=["POST"])
+@storage_login_required
+def storage_upload():
+    kind = request.form.get("kind", "")
+    slug = request.form.get("slug", "")
+    file_type = request.form.get("file_type", "main")
+    upload = request.files.get("file")
+
+    try:
+        if not upload or not upload.filename:
+            raise ValueError("Seleziona un file.")
+        if file_type == "cover":
+            name = save_uploaded_cover(kind, slug, upload)
+            flash(f"Copertina caricata: {name}", "ok")
+        else:
+            name = save_uploaded_main(kind, slug, upload)
+            flash(f"File caricato: {name}", "ok")
+    except ValueError as exc:
+        flash(str(exc), "error")
+
+    return redirect(url_for("storage_dashboard"))
+
+
+@app.route("/storage/delete-file", methods=["POST"])
+@storage_login_required
+def storage_delete_file():
+    kind = request.form.get("kind", "")
+    slug = request.form.get("slug", "")
+    file_type = request.form.get("file_type", "main")
+
+    try:
+        if file_type == "cover":
+            delete_cover_file(kind, slug)
+            flash("Copertina eliminata.", "ok")
+        else:
+            delete_main_file(kind, slug)
+            label = "PDF" if kind == "giornalino" else "MP3"
+            flash(f"{label} eliminato.", "ok")
+    except ValueError as exc:
+        flash(str(exc), "error")
+
+    return redirect(url_for("storage_dashboard"))
+
+
+@app.route("/storage/delete-item", methods=["POST"])
+@storage_login_required
+def storage_delete_item():
+    kind = request.form.get("kind", "")
+    slug = request.form.get("slug", "")
+    try:
+        delete_item(kind, slug)
+        flash(f"Eliminata la voce {slug}.", "ok")
+    except ValueError as exc:
+        flash(str(exc), "error")
+    return redirect(url_for("storage_dashboard"))
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

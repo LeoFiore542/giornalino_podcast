@@ -26,6 +26,11 @@
       <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}is-active{% endif %}">Home</a>
       <a href="{{ url_for('giornalino') }}" class="{% if request.endpoint == 'giornalino' %}is-active{% endif %}">Giornalino</a>
       <a href="{{ url_for('podcast') }}" class="{% if request.endpoint == 'podcast' %}is-active{% endif %}">Podcast</a>
+      {% if session.get('storage_auth') %}
+      <a href="{{ url_for('storage_dashboard') }}" class="{% if request.endpoint == 'storage_dashboard' %}is-active{% endif %}">Storage</a>
+      {% else %}
+      <button type="button" class="nav-text-btn" id="storage-open" aria-haspopup="dialog" aria-controls="storage-modal">Storage</button>
+      {% endif %}
     </nav>
   </header>
 
@@ -61,6 +66,31 @@
         <a href="{{ url_for('privacy') }}">Privacy</a>
       </p>
       <button type="button" class="btn btn-primary cookie-accept" id="cookie-accept">Ho capito</button>
+    </div>
+  </div>
+
+  <div
+    id="storage-modal"
+    class="storage-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="storage-modal-title"
+    hidden
+  >
+    <div class="storage-modal-backdrop" data-storage-close tabindex="-1"></div>
+    <div class="storage-modal-card">
+      <button type="button" class="storage-modal-x" data-storage-close aria-label="Chiudi">×</button>
+      <p class="catalog-kicker">Area riservata</p>
+      <h2 id="storage-modal-title">Storage</h2>
+      <p class="storage-modal-lead">Inserisci la password per gestire i file.</p>
+      <p id="storage-modal-error" class="flash flash-error" role="alert" hidden></p>
+      <form id="storage-modal-form" class="storage-login-form">
+        <label class="field">
+          <span>Password</span>
+          <input type="password" name="password" id="storage-password" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="btn btn-primary" id="storage-submit">Entra</button>
+      </form>
     </div>
   </div>
 
