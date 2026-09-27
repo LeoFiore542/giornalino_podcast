@@ -13,6 +13,7 @@ from flask import (
     url_for,
 )
 
+from redazione import list_redazione, resolve_redazione_photo
 from storage import (
     delete_cover_file,
     delete_item,
@@ -58,6 +59,20 @@ def giornalino():
 @app.route("/podcast")
 def podcast():
     return render_template("podcast.html", items=list_episodi())
+
+
+@app.route("/chi-siamo")
+@app.route("/redazione")
+def chi_siamo():
+    return render_template("redazione.html", members=list_redazione())
+
+
+@app.route("/media/redazione/<path:filename>")
+def media_redazione(filename):
+    path = resolve_redazione_photo(filename)
+    if path is None:
+        abort(404)
+    return send_file(path)
 
 
 @app.route("/media/<kind>/<slug>/<path:filename>")

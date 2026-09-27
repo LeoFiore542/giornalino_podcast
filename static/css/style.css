@@ -157,6 +157,28 @@ main {
   opacity: 0.7;
 }
 
+.footer-copy-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.footer-credit {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.65;
+}
+
+.footer-credit a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.footer-credit a:hover,
+.footer-credit a:focus-visible {
+  opacity: 1;
+}
+
 .footer-nav {
   display: flex;
   flex-wrap: wrap;
@@ -415,7 +437,7 @@ main {
 
 .hero-title {
   margin: 0 0 1rem;
-  max-width: 18ch;
+  max-width: 28ch;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(1.45rem, 3.2vw, 2.15rem);
@@ -1041,6 +1063,108 @@ main {
 .storage-empty {
   opacity: 0.6;
   font-size: 0.95rem;
+}
+
+/* —— Redazione —— */
+.redazione-section {
+  position: relative;
+  z-index: 1;
+  width: min(100%, var(--max));
+  margin: 0 auto;
+  padding: 1.75rem clamp(1rem, 4vw, 2.5rem) clamp(3rem, 8vh, 5rem);
+}
+
+.redazione-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+}
+
+.member-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem 1.1rem;
+  border-radius: 6px;
+  border: 1px solid rgba(232, 244, 241, 0.12);
+  background: rgba(232, 244, 241, 0.05);
+}
+
+.member-photo-wrap {
+  flex-shrink: 0;
+}
+
+.member-photo {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 2px solid rgba(200, 245, 66, 0.35);
+}
+
+.member-photo-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #14545f, #0a2e36);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+}
+
+.member-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.member-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.member-role {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.member-badge {
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.member-task {
+  font-size: 0.92rem;
+  opacity: 0.78;
+  line-height: 1.4;
+}
+
+.member-email {
+  font-size: 0.88rem;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  word-break: break-word;
+}
+
+.member-email:hover {
+  opacity: 0.9;
 }
 
 .storage-section-label {

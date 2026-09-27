@@ -1,0 +1,18 @@
+[
+  {
+    "nome": "Leonardo",
+    "cognome": "Fiorini",
+    "email": "fiorini.leonardo.12@gmail.com",
+    "ruolo": "studente",
+    "compito": "Sviluppo e cura del sito Voce Labriola",
+    "foto": "leonardo-fiorini.jpg"
+  },
+  {
+    "nome": "Aniello",
+    "cognome": "Fioccola",
+    "email": "",
+    "ruolo": "docente",
+    "compito": "Docente referente",
+    "foto": "aniello-fioccola.jpg"
+  }
+]

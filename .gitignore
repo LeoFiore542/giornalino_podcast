@@ -18,3 +18,4 @@ media/**/*.jpeg
 media/**/*.png
 media/**/*.webp
 media/**/*.gif
+!media/redazione/members.json

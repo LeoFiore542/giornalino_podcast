@@ -26,6 +26,7 @@
       <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}is-active{% endif %}">Home</a>
       <a href="{{ url_for('giornalino') }}" class="{% if request.endpoint == 'giornalino' %}is-active{% endif %}">Giornalino</a>
       <a href="{{ url_for('podcast') }}" class="{% if request.endpoint == 'podcast' %}is-active{% endif %}">Podcast</a>
+      <a href="{{ url_for('chi_siamo') }}" class="{% if request.endpoint == 'chi_siamo' %}is-active{% endif %}">Chi siamo</a>
       {% if session.get('storage_auth') %}
       <a href="{{ url_for('storage_dashboard') }}" class="{% if request.endpoint == 'storage_dashboard' %}is-active{% endif %}">Storage</a>
       {% else %}
@@ -40,7 +41,10 @@
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <p class="footer-copy">Giornalino e podcast della scuola Antonio Labriola</p>
+      <div class="footer-copy-block">
+        <p class="footer-copy">Giornalino e podcast del liceo scientifico statale Antonio Labriola</p>
+        <p class="footer-credit">Sito a cura di: Leonardo Fiorini — <a href="mailto:fiorini.leonardo.12@gmail.com">fiorini.leonardo.12@gmail.com</a></p>
+      </div>
       <nav class="footer-nav" aria-label="Informazioni legali">
         <a href="{{ url_for('privacy') }}">Privacy</a>
         <a href="{{ url_for('accessibilita') }}">Accessibilità</a>
