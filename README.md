@@ -1,4 +1,4 @@
-# Voci di corridoio — Giornalino & Podcast
+# Voci dal corridoio — Giornalino & Podcast
 
 Sito Flask per il giornalino e il podcast della scuola Antonio Labriola.
 
@@ -45,7 +45,7 @@ In futuro la cartella `media/` può essere riempita da un sync Google Drive.
 
 Nella nav c’è **Storage**: apre un popup password; solo con password corretta si entra nella dashboard (PDF/MP3).
 
-Password di default (solo sviluppo): `vocidicorridoio`  
+Password di default (solo sviluppo): `vocidalcorridoio`  
 
 Su PythonAnywhere impostala così (Bash, poi Reload):
 ```bash

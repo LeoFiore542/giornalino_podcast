@@ -30,10 +30,10 @@ from storage import (
 )
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "voci-di-corridoio-dev-change-me")
+app.secret_key = os.environ.get("SECRET_KEY", "voci-dal-corridoio-dev-change-me")
 app.config["MAX_CONTENT_LENGTH"] = 64 * 1024 * 1024  # 64 MB
 
-STORAGE_PASSWORD = os.environ.get("STORAGE_PASSWORD", "vocidicorridoio")
+STORAGE_PASSWORD = os.environ.get("STORAGE_PASSWORD", "vocidalcorridoio")
 
 
 def storage_login_required(view):
