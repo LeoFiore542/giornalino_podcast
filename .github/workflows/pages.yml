@@ -32,7 +32,6 @@ jobs:
       - name: Build static site
         env:
           BASE_PATH: /giornalino_podcast
-          STATIC_EXPORT: "1"
         run: python build_static.py
 
       - name: Upload Pages artifact

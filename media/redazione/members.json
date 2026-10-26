@@ -8,9 +8,17 @@
     "foto": "leonardo-fiorini.jpg"
   },
   {
+    "nome": "Matteo",
+    "cognome": "Girolami",
+    "email": "",
+    "ruolo": "studente",
+    "compito": "Conduttore",
+    "foto": ""
+  },
+  {
     "nome": "Aniello",
     "cognome": "Fioccola",
-    "email": "",
+    "email": "aniellofioccola@gmail.com",
     "ruolo": "docente",
     "compito": "Docente referente",
     "foto": "aniello-fioccola.jpg"

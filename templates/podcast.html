@@ -15,7 +15,7 @@
 
 <section class="catalog" aria-label="Episodi del podcast">
   <div class="catalog-toolbar reveal">
-    <p class="catalog-count">{{ items|length }} episodi</p>
+    <p class="catalog-count">{{ total }} episodi</p>
     <div class="view-toggle" role="group" aria-label="Modalità di visualizzazione">
       <button type="button" class="view-btn is-active" data-view="grid" aria-pressed="true">
         <span class="view-icon" aria-hidden="true">▦</span> Griglia
@@ -26,40 +26,66 @@
     </div>
   </div>
 
-  <div class="media-catalog" data-view="grid">
-    {% for item in items %}
-    <article class="media-card reveal">
-      <div
-        class="{{ item.cover_style }}"
-        {% if item.cover_url %}style="background-image: url('{{ item.cover_url }}');"{% endif %}
-        aria-hidden="true"
-      >
-        <span class="cover-mark">Ep. {{ "%02d"|format(item.episode) }}</span>
-      </div>
-      <div class="media-body">
-        <div class="media-meta">
-          <span class="media-badge">Episodio {{ item.episode }}</span>
-          <time datetime="{{ item.date }}">{{ item.date_label }}</time>
+  {% if sections %}
+  {% for section in sections %}
+  <div class="podcast-section reveal">
+    <div class="podcast-section-head">
+      <h2 class="podcast-section-title">{{ section.title }}</h2>
+      {% if section.description %}
+      <p class="podcast-section-desc">{{ section.description }}</p>
+      {% endif %}
+    </div>
+    <div class="media-catalog" data-view="grid">
+      {% for item in section.items %}
+      <article class="media-card">
+        <div
+          class="{{ item.cover_style }}"
+          {% if item.cover_url %}style="background-image: url('{{ item.cover_url }}');"{% endif %}
+          aria-hidden="true"
+        >
+          <span class="cover-mark">
+            {% if section.slug == 'speciale-elezioni' %}
+            Lista {{ item.episode }}
+            {% else %}
+            Ep. {{ "%02d"|format(item.episode) }}
+            {% endif %}
+          </span>
         </div>
-        <h2 class="media-title">{{ item.title }}</h2>
-        <p class="media-desc">{{ item.description }}</p>
-        {% if item.duration %}
-        <p class="media-duration">{{ item.duration }}</p>
-        {% endif %}
-        <div class="media-actions">
-          {% if item.file_ready %}
-          <audio class="media-audio" controls preload="none" src="{{ item.file_url }}">
-            Il tuo browser non supporta l’audio HTML5.
-          </audio>
-          {% else %}
-          <span class="media-pending">Audio in arrivo</span>
+        <div class="media-body">
+          <div class="media-meta">
+            <span class="media-badge">
+              {% if section.slug == 'speciale-elezioni' %}
+              Lista {{ item.episode }}
+              {% else %}
+              Episodio {{ item.episode }}
+              {% endif %}
+            </span>
+            {% if item.date_label %}
+            <time datetime="{{ item.date }}">{{ item.date_label }}</time>
+            {% endif %}
+          </div>
+          <h3 class="media-title">{{ item.title }}</h3>
+          <p class="media-desc">{{ item.description }}</p>
+          {% if item.duration %}
+          <p class="media-duration">{{ item.duration }}</p>
           {% endif %}
+          <div class="media-actions">
+            {% if item.file_ready %}
+            <audio class="media-audio" controls preload="none" src="{{ item.file_url }}">
+              Il tuo browser non supporta l’audio HTML5.
+            </audio>
+            {% else %}
+            <span class="media-pending">Audio in arrivo</span>
+            {% endif %}
+          </div>
         </div>
-      </div>
-    </article>
-    {% else %}
-    <p class="catalog-empty">Nessun episodio in archivio.</p>
-    {% endfor %}
+      </article>
+      {% endfor %}
+    </div>
   </div>
+  {% endfor %}
+  {% else %}
+  <p class="catalog-empty">Nessun episodio in archivio.</p>
+  {% endif %}
 </section>
 {% endblock %}

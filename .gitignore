@@ -12,11 +12,3 @@ dist/
 build/
 site/
 *.egg-info/
-media/**/*.pdf
-media/**/*.mp3
-media/**/*.jpg
-media/**/*.jpeg
-media/**/*.png
-media/**/*.webp
-media/**/*.gif
-!media/redazione/members.json

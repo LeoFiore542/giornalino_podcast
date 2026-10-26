@@ -3,6 +3,7 @@
 Layout:
   media/giornalino/<slug>/meta.json  + issue.pdf  + cover.jpg (optional)
   media/podcast/<slug>/meta.json     + audio.mp3  + cover.jpg (optional)
+  media/podcast/<categoria>/<slug>/  # sottocategorie (es. speciale-elezioni/lista-1)
 """
 
 from __future__ import annotations
@@ -13,6 +14,7 @@ from datetime import datetime
 from pathlib import Path
 
 MEDIA_ROOT = Path(__file__).resolve().parent / "media"
+SLUG_PART = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 
 ALLOWED_EXTENSIONS = {
     ".pdf",
@@ -73,10 +75,22 @@ def _safe_name(name: str | None) -> str | None:
 
 
 def _safe_slug(slug: str) -> str | None:
+    """Single path segment slug (giornalino / episodio top-level)."""
     slug = Path(slug).name.strip().lower()
-    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
+    if not SLUG_PART.fullmatch(slug):
         return None
     return slug
+
+
+def _safe_relpath(relpath: str) -> str | None:
+    """Relative path under kind root, e.g. speciale-elezioni/lista-1."""
+    raw = str(relpath or "").strip().replace("\\", "/").strip("/")
+    if not raw or raw.startswith(".") or ".." in raw.split("/"):
+        return None
+    parts = [p for p in raw.split("/") if p]
+    if not parts or not all(SLUG_PART.fullmatch(p) for p in parts):
+        return None
+    return "/".join(parts)
 
 
 def _load_meta(folder: Path) -> dict | None:
@@ -100,21 +114,22 @@ def _write_meta(folder: Path, meta: dict) -> None:
     )
 
 
-def _file_url(kind: str, slug: str, filename: str | None) -> str | None:
+def _file_url(kind: str, rel_slug: str, filename: str | None) -> str | None:
     safe = _safe_name(filename)
-    if not safe:
+    safe_rel = _safe_relpath(rel_slug)
+    if not safe or not safe_rel:
         return None
-    path = MEDIA_ROOT / kind / slug / safe
+    path = MEDIA_ROOT / kind / Path(*safe_rel.split("/")) / safe
     if not path.is_file():
         return None
     try:
         from flask import has_request_context, url_for
 
         if has_request_context():
-            return url_for("media_file", kind=kind, slug=slug, filename=safe)
+            return url_for("media_file", kind=kind, relpath=f"{safe_rel}/{safe}")
     except Exception:
         pass
-    return f"/media/{kind}/{slug}/{safe}"
+    return f"/media/{kind}/{safe_rel}/{safe}"
 
 
 def _cover_style(cover_url: str | None, cover_class: str) -> str:
@@ -124,25 +139,29 @@ def _cover_style(cover_url: str | None, cover_class: str) -> str:
     return " ".join(classes)
 
 
-def _item_from_folder(kind: str, folder: Path) -> dict | None:
+def _item_from_folder(kind: str, folder: Path, *, rel_slug: str | None = None) -> dict | None:
     meta = _load_meta(folder)
     if not meta:
         return None
 
-    slug = folder.name
+    slug = rel_slug or folder.name
+    safe_rel = _safe_relpath(slug)
+    if not safe_rel:
+        return None
+
     default_file = MAIN_FILE[kind]
     file_name = _safe_name(meta.get("file") or default_file) or default_file
     cover_name = _safe_name(meta.get("cover"))
     date = str(meta.get("date") or "")
     default_cover = "cover-spring" if kind == "giornalino" else "cover-mic"
     cover_class = str(meta.get("cover_class") or default_cover)
-    file_url = _file_url(kind, slug, file_name)
-    cover_url = _file_url(kind, slug, cover_name)
+    file_url = _file_url(kind, safe_rel, file_name)
+    cover_url = _file_url(kind, safe_rel, cover_name)
 
     item = {
-        "slug": slug,
+        "slug": safe_rel,
         "kind": kind,
-        "title": str(meta.get("title") or slug),
+        "title": str(meta.get("title") or folder.name),
         "description": str(meta.get("description") or ""),
         "date": date,
         "date_label": date_label_it(date) if date else "",
@@ -182,32 +201,102 @@ def list_giornalini() -> list[dict]:
     return items
 
 
+def _load_category(folder: Path) -> dict:
+    meta_path = folder / "category.json"
+    title = folder.name.replace("-", " ").strip().title()
+    description = ""
+    if meta_path.is_file():
+        try:
+            data = json.loads(meta_path.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                title = str(data.get("title") or title)
+                description = str(data.get("description") or "")
+        except (OSError, json.JSONDecodeError):
+            pass
+    return {"slug": folder.name, "title": title, "description": description}
+
+
 def list_episodi() -> list[dict]:
+    """Flat list of all podcast items (top-level + sottocategorie)."""
+    sections = list_podcast_sections()
+    items: list[dict] = []
+    for section in sections:
+        items.extend(section["items"])
+    return items
+
+
+def list_podcast_sections() -> list[dict]:
+    """Podcast grouped by category. Top-level episodes use title 'Episodi'."""
     root = MEDIA_ROOT / "podcast"
     if not root.is_dir():
         return []
 
-    items: list[dict] = []
+    general_items: list[dict] = []
+    sections: list[dict] = []
+
     for folder in sorted(root.iterdir()):
         if not folder.is_dir() or folder.name.startswith("."):
             continue
+
+        # Sottocategoria: cartella con figli che hanno meta.json
+        child_items: list[dict] = []
+        for child in sorted(folder.iterdir()):
+            if not child.is_dir() or child.name.startswith("."):
+                continue
+            rel = f"{folder.name}/{child.name}"
+            item = _item_from_folder("podcast", child, rel_slug=rel)
+            if item:
+                child_items.append(item)
+
+        if child_items:
+            child_items.sort(key=lambda x: (x["date"], x["episode"]))
+            cat = _load_category(folder)
+            sections.append(
+                {
+                    "slug": cat["slug"],
+                    "title": cat["title"],
+                    "description": cat["description"],
+                    "items": child_items,
+                }
+            )
+            continue
+
         item = _item_from_folder("podcast", folder)
         if item:
-            items.append(item)
+            general_items.append(item)
 
-    items.sort(key=lambda x: (x["date"], x["episode"]), reverse=True)
-    return items
+    general_items.sort(key=lambda x: (x["date"], x["episode"]), reverse=True)
+    result: list[dict] = []
+    if general_items:
+        result.append(
+            {
+                "slug": "",
+                "title": "Episodi",
+                "description": "",
+                "items": general_items,
+            }
+        )
+    result.extend(sections)
+    return result
 
 
-def resolve_media_file(kind: str, slug: str, filename: str) -> Path | None:
+def resolve_media_file(kind: str, relpath: str) -> Path | None:
+    """Resolve media/<kind>/<relpath> where relpath includes folders + filename."""
     if kind not in {"giornalino", "podcast"}:
         return None
-    safe_slug = _safe_slug(slug)
-    safe_file = _safe_name(filename)
-    if not safe_file or not safe_slug:
+    safe_rel = _safe_relpath(relpath)
+    if not safe_rel:
         return None
-    path = (MEDIA_ROOT / kind / safe_slug / safe_file).resolve()
-    root = (MEDIA_ROOT / kind / safe_slug).resolve()
+    parts = safe_rel.split("/")
+    if len(parts) < 2:
+        return None
+    *dir_parts, filename = parts
+    safe_file = _safe_name(filename)
+    if not safe_file:
+        return None
+    folder = MEDIA_ROOT / kind / Path(*dir_parts)
+    path = (folder / safe_file).resolve()
+    root = (MEDIA_ROOT / kind).resolve()
     try:
         path.relative_to(root)
     except ValueError:

@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 """Build a static export of the public site for GitHub Pages.
 
-GitHub Pages cannot run Flask. This script renders the public templates and
-copies static/ + media/ into ./site ready to publish.
-
 Environment:
   BASE_PATH   URL prefix for project pages (default: /giornalino_podcast).
               Use empty string for a custom domain at the site root.
@@ -20,8 +17,6 @@ ROOT = Path(__file__).resolve().parent
 DEST = ROOT / "site"
 DEFAULT_BASE = "/giornalino_podcast"
 
-# Must be set before importing the Flask app.
-os.environ["STATIC_EXPORT"] = "1"
 BASE_PATH = os.environ.get("BASE_PATH", DEFAULT_BASE).rstrip("/")
 os.environ["BASE_PATH"] = BASE_PATH
 
@@ -32,7 +27,7 @@ PAGES: list[tuple[str, str]] = [
     ("/giornalino", "giornalino/index.html"),
     ("/podcast", "podcast/index.html"),
     ("/chi-siamo", "chi-siamo/index.html"),
-    ("/redazione", "redazione/index.html"),  # alias storico
+    ("/redazione", "redazione/index.html"),
     ("/privacy", "privacy/index.html"),
     ("/accessibilita", "accessibilita/index.html"),
     ("/note-legali", "note-legali/index.html"),
@@ -67,10 +62,7 @@ def build() -> int:
         for url, relpath in PAGES:
             response = client.get(url, environ_overrides=environ)
             if response.status_code != 200:
-                print(
-                    f"ERROR: {url} -> HTTP {response.status_code}",
-                    file=sys.stderr,
-                )
+                print(f"ERROR: {url} -> HTTP {response.status_code}", file=sys.stderr)
                 return 1
             _write(DEST / relpath, response.data)
             print(f"OK  {url} -> {relpath}")
