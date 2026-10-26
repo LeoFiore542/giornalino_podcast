@@ -52,7 +52,15 @@ def list_redazione() -> list[dict]:
         foto_name = _safe_photo(raw.get("foto"))
         foto_url = None
         if foto_name and (REDAZIONE_ROOT / foto_name).is_file():
-            foto_url = f"/media/redazione/{foto_name}"
+            try:
+                from flask import has_request_context, url_for
+
+                if has_request_context():
+                    foto_url = url_for("media_redazione", filename=foto_name)
+                else:
+                    foto_url = f"/media/redazione/{foto_name}"
+            except Exception:
+                foto_url = f"/media/redazione/{foto_name}"
 
         initials = "".join(part[0].upper() for part in (nome, cognome) if part)[:2] or "?"
 

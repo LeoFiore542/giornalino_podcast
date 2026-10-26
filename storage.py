@@ -107,6 +107,13 @@ def _file_url(kind: str, slug: str, filename: str | None) -> str | None:
     path = MEDIA_ROOT / kind / slug / safe
     if not path.is_file():
         return None
+    try:
+        from flask import has_request_context, url_for
+
+        if has_request_context():
+            return url_for("media_file", kind=kind, slug=slug, filename=safe)
+    except Exception:
+        pass
     return f"/media/{kind}/{slug}/{safe}"
 
 

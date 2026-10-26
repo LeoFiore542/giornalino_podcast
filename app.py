@@ -32,6 +32,12 @@ from storage import (
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "voci-dal-corridoio-dev-change-me")
 app.config["MAX_CONTENT_LENGTH"] = 64 * 1024 * 1024  # 64 MB
+# True when building the static GitHub Pages export (no admin UI).
+app.config["STATIC_EXPORT"] = os.environ.get("STATIC_EXPORT", "").lower() in {
+    "1",
+    "true",
+    "yes",
+}
 
 STORAGE_PASSWORD = os.environ.get("STORAGE_PASSWORD", "vocidalcorridoio")
 
@@ -61,8 +67,8 @@ def podcast():
     return render_template("podcast.html", items=list_episodi())
 
 
-@app.route("/chi-siamo")
 @app.route("/redazione")
+@app.route("/chi-siamo")
 def chi_siamo():
     members = list_redazione()
     docenti = [m for m in members if m["ruolo"] == "docente"]

@@ -27,6 +27,7 @@
       <a href="{{ url_for('giornalino') }}" class="{% if request.endpoint == 'giornalino' %}is-active{% endif %}">Giornalino</a>
       <a href="{{ url_for('podcast') }}" class="{% if request.endpoint == 'podcast' %}is-active{% endif %}">Podcast</a>
       <a href="{{ url_for('chi_siamo') }}" class="{% if request.endpoint == 'chi_siamo' %}is-active{% endif %}">Chi siamo</a>
+      {% if not config.STATIC_EXPORT %}
       {% if session.get('storage_auth') %}
       <a
         href="{{ url_for('storage_dashboard') }}"
@@ -52,6 +53,7 @@
           <path fill="currentColor" d="M17 8h-1V6a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2zm-7-2a2 2 0 1 1 4 0v2h-4V6zm7 12H7v-8h10v8zm-5-3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
         </svg>
       </button>
+      {% endif %}
       {% endif %}
     </nav>
   </header>
@@ -94,6 +96,7 @@
     </div>
   </div>
 
+  {% if not config.STATIC_EXPORT %}
   <div
     id="storage-modal"
     class="storage-modal"
@@ -118,6 +121,7 @@
       </form>
     </div>
   </div>
+  {% endif %}
 
   <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </body>

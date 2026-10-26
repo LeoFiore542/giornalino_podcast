@@ -10,6 +10,7 @@ venv/
 .Python
 dist/
 build/
+site/
 *.egg-info/
 media/**/*.pdf
 media/**/*.mp3
