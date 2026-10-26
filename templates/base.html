@@ -28,9 +28,30 @@
       <a href="{{ url_for('podcast') }}" class="{% if request.endpoint == 'podcast' %}is-active{% endif %}">Podcast</a>
       <a href="{{ url_for('chi_siamo') }}" class="{% if request.endpoint == 'chi_siamo' %}is-active{% endif %}">Chi siamo</a>
       {% if session.get('storage_auth') %}
-      <a href="{{ url_for('storage_dashboard') }}" class="{% if request.endpoint == 'storage_dashboard' %}is-active{% endif %}">Storage</a>
+      <a
+        href="{{ url_for('storage_dashboard') }}"
+        class="nav-lock {% if request.endpoint == 'storage_dashboard' %}is-active{% endif %}"
+        aria-label="Area riservata"
+        title="Area riservata"
+      >
+        <svg class="nav-lock-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M17 8h-1V6a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2zm-7-2a2 2 0 1 1 4 0v2h-4V6zm7 12H7v-8h10v8zm-5-3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+        </svg>
+      </a>
       {% else %}
-      <button type="button" class="nav-text-btn" id="storage-open" aria-haspopup="dialog" aria-controls="storage-modal">Storage</button>
+      <button
+        type="button"
+        class="nav-lock"
+        id="storage-open"
+        aria-haspopup="dialog"
+        aria-controls="storage-modal"
+        aria-label="Area riservata"
+        title="Area riservata"
+      >
+        <svg class="nav-lock-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M17 8h-1V6a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2zm-7-2a2 2 0 1 1 4 0v2h-4V6zm7 12H7v-8h10v8zm-5-3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+        </svg>
+      </button>
       {% endif %}
     </nav>
   </header>
