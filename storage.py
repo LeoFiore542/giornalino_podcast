@@ -221,7 +221,7 @@ def list_episodi() -> list[dict]:
     sections = list_podcast_sections()
     items: list[dict] = []
     for section in sections:
-        items.extend(section["items"])
+        items.extend(section["episodes"])
     return items
 
 
@@ -256,7 +256,7 @@ def list_podcast_sections() -> list[dict]:
                     "slug": cat["slug"],
                     "title": cat["title"],
                     "description": cat["description"],
-                    "items": child_items,
+                    "episodes": child_items,
                 }
             )
             continue
@@ -273,7 +273,7 @@ def list_podcast_sections() -> list[dict]:
                 "slug": "",
                 "title": "Episodi",
                 "description": "",
-                "items": general_items,
+                "episodes": general_items,
             }
         )
     result.extend(sections)

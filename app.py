@@ -22,7 +22,7 @@ def giornalino():
 @app.route("/podcast")
 def podcast():
     sections = list_podcast_sections()
-    total = sum(len(section["items"]) for section in sections)
+    total = sum(len(section["episodes"]) for section in sections)
     return render_template("podcast.html", sections=sections, total=total)
 
 
